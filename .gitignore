@@ -1,0 +1,44 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+.Python
+
+# --- Virtual Environment ---
+venv/
+.env/
+env/
+.venv/
+
+# --- Streamlit & App Files ---
+.streamlit/secrets.toml
+st_secrets.toml
+firebase-service-key.json
+
+# --- Data Files ---
+*.csv
+*.xlsx
+*.json
+data/
+uploads/
+
+# --- IDE & System Files ---
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# --- Logs & Caches ---
+*.log
+*.tmp
+*.bak
+.cache/
+__pycache__/
+.ipynb_checkpoints/
+
+# --- OS specific ---
+Thumbs.db
