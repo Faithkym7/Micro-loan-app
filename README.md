@@ -1,7 +1,9 @@
 # 💰 Micro-Loan Eligibility App
 
 **App Name:** _(not yet decided)_  
-**Team:** Ebenezer Wakyendo, Shalom Kinuthia, Faith Kimani  
+**Team:** Ebenezer Wakyendo, Shalom Kinuthia, Faith Kimani 
+[📘 View Documentation](https://faithkimani.github.io/Micro-loan-app/)
+
 
 ---
 
