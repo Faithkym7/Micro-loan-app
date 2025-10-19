@@ -2,6 +2,7 @@
 
 **App Name:** _(not yet decided)_  
 **Team:** Ebenezer Wakyendo, Shalom Kinuthia, Faith Kimani 
+
 **Documentation:** [📘 View Documentation](https://faithkimani.github.io/Micro-loan-app/)
 
 
