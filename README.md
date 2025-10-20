@@ -2,6 +2,7 @@
 
 **App Name:** _(not yet decided)_  
 **App:** [Link](https://faithkym7-micro-loan-app-app-foyf2k.streamlit.app/)
+
 **Team:** Ebenezer Wakyendo, Shalom Kinuthia, Faith Kimani 
 
 **Documentation:** [📘 View Documentation](https://faithkym7.github.io/Micro-loan-app/)
