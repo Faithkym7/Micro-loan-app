@@ -18,6 +18,7 @@ env/
 .streamlit/secrets.toml
 st_secrets.toml
 firebase-service-key.json
+secrets.toml
 
 # --- Data Files ---
 *.csv
