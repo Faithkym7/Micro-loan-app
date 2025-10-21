@@ -1,5 +1,5 @@
 import streamlit as st
-from backend.data.data_logic import process_uploaded_file
+from backend.Data.data_logic import process_uploaded_file
 
 def render_data_ui():
     """Render file upload and data entry UI based on 5C's of Credit"""
