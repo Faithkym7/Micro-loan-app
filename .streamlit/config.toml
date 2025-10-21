@@ -1,0 +1,13 @@
+[theme]
+primaryColor="#2ecc71"
+backgroundColor="#ffffff"
+secondaryBackgroundColor="#e6f2ea"
+textColor="#111111"
+font="sans serif"
+
+[theme.dark]
+primaryColor="#2ecc71"
+backgroundColor="#111111"
+secondaryBackgroundColor="#1a1a1a"
+textColor="#f0f0f0"
+font="sans serif"
