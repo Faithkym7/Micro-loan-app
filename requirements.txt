@@ -2,3 +2,8 @@ matplotlib
 streamlit
 pandas
 openai
+requests
+requests-toolbelt
+pytesseract
+pdf2image
+Pillow
