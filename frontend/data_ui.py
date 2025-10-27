@@ -135,7 +135,8 @@ def render_data_ui():
                 if result.get("status") == "processing":
                     st.info("✅ Your application has been received and is being processed!")
                 elif result.get("status") == "success":
-                    st.success("✅ Loan application submitted successfully!")
+                    st.session_state["latest_loan_data"] = result.get("data")
+                    st.success("✅ Loan application submitted and scored successfully!")
                 else:
                     st.error(f"❌ Submission failed: {result.get('message')}")
 

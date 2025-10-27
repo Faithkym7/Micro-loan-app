@@ -4,11 +4,13 @@ import requests
 import json
 import streamlit as st
 import io
-import streamlit as st
 from requests_toolbelt.multipart.encoder import MultipartEncoder, MultipartEncoderMonitor
+from pdf2image import convert_from_bytes
+import pytesseract
+from PIL import Image
 
 def process_uploaded_file(file_dict):
-    """Process and validate multiple uploaded files."""
+    """Process and validate multiple uploaded files (CSV + PDF OCR)."""
     results = {}
 
     for name, file in file_dict.items():
@@ -16,20 +18,75 @@ def process_uploaded_file(file_dict):
             continue
 
         try:
-            if file.name.lower().endswith(".csv"):
+            filename = file.name.lower()
+
+            # --- CSV Handling ---
+            if filename.endswith(".csv"):
                 df = pd.read_csv(file)
                 if df.empty:
-                    results[name] = {"status": "error", "message": "File is empty.", "data": None, "preview": "empty csv"}
+                    results[name] = {
+                        "status": "error",
+                        "message": "File is empty.",
+                        "data": None,
+                        "preview": "empty csv"
+                    }
                 else:
-                    results[name] = {"status": "success", "data": df, "preview": f"CSV with {len(df)} rows and {len(df.columns)} columns"}
-            elif file.name.lower().endswith(".pdf"):
-                # We won’t parse PDF for now; just acknowledge upload.
-                # Provide a small preview/placeholder so frontend can explain why no tabular preview is shown
-                results[name] = {"status": "success", "data": None, "preview": "PDF uploaded (no tabular preview available)"}
+                    results[name] = {
+                        "status": "success",
+                        "data": df,
+                        "preview": f"CSV with {len(df)} rows and {len(df.columns)} columns"
+                    }
+
+            # --- PDF Handling (OCR) ---
+            elif filename.endswith(".pdf"):
+                try:
+                    # Convert PDF pages to images
+                    pdf_bytes = file.read()
+                    images = convert_from_bytes(pdf_bytes)
+
+                    # Run OCR on each page
+                    extracted_text = ""
+                    for page_number, img in enumerate(images, start=1):
+                        text = pytesseract.image_to_string(img)
+                        extracted_text += f"\n\n--- Page {page_number} ---\n{text.strip()}"
+
+                    if extracted_text.strip():
+                        results[name] = {
+                            "status": "success",
+                            "data": extracted_text,
+                            "preview": f"Extracted text from {len(images)} page(s)"
+                        }
+                    else:
+                        results[name] = {
+                            "status": "error",
+                            "message": "No text detected via OCR.",
+                            "data": None,
+                            "preview": "blank pdf"
+                        }
+
+                except Exception as ocr_err:
+                    results[name] = {
+                        "status": "error",
+                        "message": f"OCR failed: {ocr_err}",
+                        "data": None,
+                        "preview": "ocr error"
+                    }
+
             else:
-                results[name] = {"status": "error", "message": "Unsupported file type.", "data": None, "preview": "unsupported"}
+                results[name] = {
+                    "status": "error",
+                    "message": "Unsupported file type.",
+                    "data": None,
+                    "preview": "unsupported"
+                }
+
         except Exception as e:
-            results[name] = {"status": "error", "message": str(e), "data": None, "preview": "error"}
+            results[name] = {
+                "status": "error",
+                "message": str(e),
+                "data": None,
+                "preview": "error"
+            }
 
     return results
 
@@ -37,6 +94,7 @@ def process_uploaded_file(file_dict):
 def submit_loan_application(files, metadata):
     """
     Send files + metadata to n8n webhook with progress feedback.
+    Stores response JSON in st.session_state['latest_loan_data'] for chat usage.
     Returns a dict with status, message, and optionally response data.
     """
     webhook_url = st.secrets.get("n8n", {}).get("webhook_url")
@@ -81,7 +139,13 @@ def submit_loan_application(files, metadata):
 
             if response.status_code == 200:
                 try:
+                    # Parse JSON response
                     response_json = response.json() if response.headers.get("Content-Type", "").startswith("application/json") else None
+                    
+                    # Store in session state for chat
+                    if response_json:
+                        st.session_state["latest_loan_data"] = response_json
+
                     return {
                         "status": "success",
                         "message": "Loan data sent successfully.",
